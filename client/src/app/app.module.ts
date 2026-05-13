@@ -1,0 +1,48 @@
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RestaurantComponent } from './component/restaurant/restaurant.component';
+import { MenuItemComponent } from './component/menu-item/menu-item.component';
+import { OrderComponent } from './component/order/order.component';
+import { RegisterComponent } from './auth/register/register.component';
+import { LoginComponent } from './auth/login/login.component';
+import { HttpClientModule } from '@angular/common/http';
+import { DashboardComponent } from './component/dashboard/dashboard.component';
+import { AssignmanagerComponent } from './component/assignmanager/assignmanager.component';
+import { FeedbackComponent } from './component/feedback/feedback.component';
+import { CustomerdetailsComponent } from './component/customerdetails/customerdetails.component';
+import { FilterRestaurantsPipe } from './filter-restaurants.pipe';
+import { FilterOrdersPipe } from './filter-orders.pipe';
+import { FilterMenuItemsPipe } from './filter-menu-items.pipe';
+
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    RegisterComponent,
+    LoginComponent,
+    RestaurantComponent,
+    MenuItemComponent,
+    OrderComponent,
+    DashboardComponent,
+    AssignmanagerComponent,
+    FeedbackComponent,
+    CustomerdetailsComponent,
+    FilterRestaurantsPipe,
+    FilterOrdersPipe,
+    FilterMenuItemsPipe,
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    HttpClientModule,
+    ReactiveFormsModule 
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
