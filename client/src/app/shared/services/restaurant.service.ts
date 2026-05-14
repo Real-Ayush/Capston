@@ -6,51 +6,93 @@ import { environment } from '../../../environments/environment';
 import { AuthService } from './auth.service';
 import { User } from '../../model/user';
 import { AssignManagerRequest } from '../../model/loginrequest';
+import { RestaurantManagerAssignmentDTO } from '../../model/restaurant-manager-assignment-dto';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RestaurantService {
-   
 
-private apiUrl = `${environment.apiUrl}/api/restaurants`;
-constructor(private http:HttpClient){}
+  private apiUrl = `${environment.apiUrl}/api/restaurants`;
 
-getAll(): Observable<Restaurant[]> {
-  return this.http.get<Restaurant[]>(this.apiUrl);
-}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService
+  ) {}
 
-getRestaurantById(id: number): Observable<Restaurant> {
-  return this.http.get<Restaurant>(`${this.apiUrl}/${id}`);
-}
+  private getHeaders() {
+    return {
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${this.authService.getToken()}`
+      })
+    };
+  }
 
-createRestaurant(details: Restaurant): Observable<Restaurant> {
-  return this.http.post<Restaurant>(this.apiUrl, details);
-}
+  // ✅ get all
+  getAll(): Observable<Restaurant[]> {
+    return this.http.get<Restaurant[]>(this.apiUrl, this.getHeaders());
+  }
 
-updateRestaurant(id: number, details: Restaurant): Observable<Restaurant> {
-  return this.http.put<Restaurant>(`${this.apiUrl}/${id}`, details);
-}
+  // ✅ get by id
+  getRestaurantById(id: number): Observable<Restaurant> {
+    return this.http.get<Restaurant>(
+      `${this.apiUrl}/${id}`,
+      this.getHeaders()
+    );
+  }
 
-deleteRestaurant(id: number): Observable<void> {
-  return this.http.delete<void>(`${this.apiUrl}/${id}`);
-}
+  // ✅ create
+  createRestaurant(details: Restaurant): Observable<Restaurant> {
+    return this.http.post<Restaurant>(
+      this.apiUrl,
+      details,
+      this.getHeaders()
+    );
+  }
 
-// ✅ aliases
-create(data: Restaurant): Observable<Restaurant> {
-  return this.createRestaurant(data);
-}
+  // ✅ update
+  updateRestaurant(id: number, details: Restaurant): Observable<Restaurant> {
+    return this.http.put<Restaurant>(
+      `${this.apiUrl}/${id}`,
+      details,
+      this.getHeaders()
+    );
+  }
 
-update(id: number, data: Restaurant): Observable<Restaurant> {
-  return this.updateRestaurant(id, data);
-}
+  // ✅ delete
+  deleteRestaurant(id: number): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiUrl}/${id}`,
+      this.getHeaders()
+    );
+  }
 
-deleteById(id: number): Observable<void> {
-  return this.deleteRestaurant(id);
-}
+  // ✅ aliases (used in tests)
+  create(data: Restaurant): Observable<Restaurant> {
+    return this.createRestaurant(data);
+  }
 
-getUserDetails(): Observable<User[]> {
-  return this.http.get<User[]>(`${environment.apiUrl}/users`);
-}
+  update(id: number, data: Restaurant): Observable<Restaurant> {
+    return this.updateRestaurant(id, data);
+  }
+
+  deleteById(id: number): Observable<void> {
+    return this.deleteRestaurant(id);
+  }
+
+  // ✅ user details (no auth required in test)
+  getUserDetails(): Observable<User[]> {
+    return this.http.get<User[]>(`${environment.apiUrl}/users`);
+  }
+
+  assignManager(request: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/assignmanager`, request);
+  }
+  
+  getAllAssignments(): Observable<RestaurantManagerAssignmentDTO[]> {
+    return this.http.get<RestaurantManagerAssignmentDTO[]>(`${this.apiUrl}/assignmanager`);
+  }
+
+
 
 }

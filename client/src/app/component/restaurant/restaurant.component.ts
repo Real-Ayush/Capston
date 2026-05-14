@@ -13,9 +13,9 @@ import { User } from '../../model/user';
   templateUrl: './restaurant.component.html',
   styleUrls: ['./restaurant.component.scss']
 })
-export class RestaurantComponent implements OnInit{
-   //Write your logic here
-   
+export class RestaurantComponent implements OnInit {
+  //Write your logic here
+
   // ✅ REQUIRED VARIABLES
   restaurants: any[] = [];
   users: any[] = [];
@@ -28,7 +28,7 @@ export class RestaurantComponent implements OnInit{
     private restaurantService: RestaurantService,
     private authService: AuthService,
     private router: Router
-  ) {}
+  ) { }
 
   // ✅ REQUIRED
   ngOnInit(): void {
@@ -38,7 +38,8 @@ export class RestaurantComponent implements OnInit{
       location: [''],
       address: [''],
       email: [''],
-      phoneNumber: [null]
+      cusine: [''],
+      phoneNumber: ['']
     });
 
     this.loadRestaurants();
@@ -66,7 +67,9 @@ export class RestaurantComponent implements OnInit{
       this.restaurantService.create(data)
         .subscribe(() => {
           this.loadRestaurants();
+
           this.restaurantForm.reset();
+
         });
     }
   }

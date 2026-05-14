@@ -6,6 +6,7 @@ export interface Restaurant {
   name:string;
   location:string;
   address:string;
+  cusine:string;
   email:string;
   phoneNumber:number;
   menuItems:MenuItem[]

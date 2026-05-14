@@ -11,8 +11,26 @@ import { Router } from '@angular/router';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent  {
+export class DashboardComponent implements OnInit  {
  //Write your logic here
+   username = '';
+  role = '';
+
+  constructor(private auth: AuthService, private router: Router) {}
+
+  ngOnInit(): void {
+    this.username = this.auth.getUsername() || '';
+    this.role = this.auth.getRole() || '';
+  }
+
+  logout(): void {
+    this.auth.logout();
+    this.router.navigate(['/login']);
+  }
+
+  isAdmin(): boolean { return this.role === 'ADMIN'; }
+  isManager(): boolean { return this.role === 'MANAGER'; }
+  isCustomer(): boolean { return this.role === 'CUSTOMER'; }
 
 
 }

@@ -17,6 +17,7 @@ import { CustomerdetailsComponent } from './component/customerdetails/customerde
 import { FilterRestaurantsPipe } from './filter-restaurants.pipe';
 import { FilterOrdersPipe } from './filter-orders.pipe';
 import { FilterMenuItemsPipe } from './filter-menu-items.pipe';
+import { AuthGuard } from './auth.guard';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { FilterMenuItemsPipe } from './filter-menu-items.pipe';
     CustomerdetailsComponent,
     FilterRestaurantsPipe,
     FilterOrdersPipe,
-    FilterMenuItemsPipe,
+    FilterMenuItemsPipe
+    
   ],
   imports: [
     BrowserModule,

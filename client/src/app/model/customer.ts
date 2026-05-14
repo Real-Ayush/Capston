@@ -1,5 +1,5 @@
 export interface Customer {
-  // customerId:number;
-  // customerName:string;
-  // customerEmail:string;
+  customerId:number;
+  customerName:string;
+  customerEmail:string;
 }
