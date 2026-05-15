@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -17,14 +18,16 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
 
   // ── UI State ──
-  isLoading = false;
+  loading = false;
   showPassword = false;
-  isDarkMode = true;
-  showErrorBanner = false;
-  errorMessage = 'Invalid username or password. Please try again.';
+  error = '';
 
-  // ── Star elements for cleanup ──
+  // ── Theme ──
+  isDarkMode = true;
+
+  // ── Cleanup ──
   private stars: HTMLElement[] = [];
+  private formSub?: Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -32,7 +35,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   ) {
     this.loginForm = this.fb.group({
       username: ['', [Validators.required, Validators.minLength(3)]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.minLength(6),this.shouldContain]]
     });
   }
 
@@ -44,16 +47,18 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.applyTheme(this.isDarkMode);
     this.generateStarfield();
 
-    // Clear error banner as soon as user types anything
-    this.loginForm.valueChanges.subscribe(() => {
-      if (this.showErrorBanner) {
-        this.showErrorBanner = false;
+    // Clear error as soon as user types
+    this.formSub = this.loginForm.valueChanges.subscribe(() => {
+      if (this.error) {
+        this.error = '';
       }
     });
   }
 
   ngOnDestroy(): void {
-    this.stars.forEach(s => s.remove());
+    this.formSub?.unsubscribe();
+
+    this.stars.forEach(star => star.remove());
     this.stars = [];
   }
 
@@ -63,21 +68,26 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     this.loginForm.markAllAsTouched();
-    if (this.loginForm.invalid) return;
 
-    this.isLoading = true;
-    this.showErrorBanner = false;
+    if (this.loginForm.invalid) {
+      return;
+    }
+
+    this.loading = true;
+    this.error = '';
 
     const { username, password } = this.loginForm.value;
 
-    // ── Replace fakeAuthCall() with your real AuthService ──
+    
+
+    // Replace this fakeAuthCall() with your real AuthService later
     this.fakeAuthCall(username, password).then(success => {
-      this.isLoading = false;
+      this.loading = false;
 
       if (success) {
-        this.router.navigate(['/dashboard']);   // ← update route
+        this.router.navigate(['/dashboard']);
       } else {
-        this.showErrorBanner = true;
+        this.error = 'Invalid username or password. Please try again.';
         this.loginForm.get('password')?.reset();
       }
     });
@@ -87,20 +97,47 @@ export class LoginComponent implements OnInit, OnDestroy {
   // FORM FIELD GETTERS
   // ─────────────────────────────────────────────
 
-  get usernameCtrl() { return this.loginForm.get('username')!; }
-  get passwordCtrl() { return this.loginForm.get('password')!; }
+  shouldContain(control:AbstractControl):ValidationErrors|null{
+    let regex=/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/
+    return regex.test(control.value)?null:{invalidPass:true};
+  }
+  get usernameCtrl() {
+    return this.loginForm.get('username')!;
+  }
+
+  get passwordCtrl() {
+    return this.loginForm.get('password')!;
+  }
 
   get usernameError(): string {
-    const c = this.usernameCtrl;
-    if (c.touched && c.hasError('required')) return 'Username is required.';
-    if (c.touched && c.hasError('minlength')) return 'Username must be at least 3 characters.';
+    const control = this.usernameCtrl;
+
+    if (control.touched && control.hasError('required')) {
+      return 'Username is required';
+    }
+
+    if (control.touched && control.hasError('minlength')) {
+      return 'Username must be at least 3 characters';
+    }
+
     return '';
   }
 
   get passwordError(): string {
-    const c = this.passwordCtrl;
-    if (c.touched && c.hasError('required')) return 'Password is required.';
-    if (c.touched && c.hasError('minlength')) return 'Password must be at least 6 characters.';
+    const control = this.passwordCtrl;
+
+    if (control.touched && control.hasError('required')) {
+      return 'Password is required';
+    }
+
+    if (control.touched && control.hasError('minlength')) {
+      return 'Password must be at least 6 characters';
+    }
+    
+    if(control.touched && control.hasError('invalidPass')){
+      return 'Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, and one number.';
+    }
+
     return '';
   }
 
@@ -108,12 +145,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   // PASSWORD VISIBILITY
   // ─────────────────────────────────────────────
 
-  togglePasswordVisibility(): void {
+  togglePassword(): void {
     this.showPassword = !this.showPassword;
   }
 
   // ─────────────────────────────────────────────
-  // THEME TOGGLE
+  // THEME
   // ─────────────────────────────────────────────
 
   toggleTheme(): void {
@@ -129,29 +166,15 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   // ─────────────────────────────────────────────
-  // SOCIAL LOGIN
-  // ─────────────────────────────────────────────
-
-  loginWithGoogle(): void {
-    // TODO: inject GoogleAuthService and call here
-    console.log('Google login clicked');
-  }
-
-  loginWithGitHub(): void {
-    // TODO: inject GitHubAuthService and call here
-    console.log('GitHub login clicked');
-  }
-
-  // ─────────────────────────────────────────────
   // NAVIGATION
   // ─────────────────────────────────────────────
 
   onForgotPassword(): void {
-    this.router.navigate(['/forgot-password']);  // ← update route
+    this.router.navigate(['/forgot-password']);
   }
 
   onCreateAccount(): void {
-    this.router.navigate(['/register']);          // ← update route
+    this.router.navigate(['/register']);
   }
 
   // ─────────────────────────────────────────────
@@ -160,20 +183,27 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   private generateStarfield(): void {
     const container = document.getElementById('starfield');
-    if (!container) return;
+
+    if (!container) {
+      return;
+    }
 
     for (let i = 0; i < 55; i++) {
       const star = document.createElement('div');
+
       star.className = 'star';
-      const sz = (Math.random() * 1.4 + 0.5).toFixed(1);
+
+      const size = (Math.random() * 1.4 + 0.5).toFixed(1);
+
       star.style.cssText =
-        `width:${sz}px; height:${sz}px;` +
+        `width:${size}px; height:${size}px;` +
         `top:${(Math.random() * 100).toFixed(1)}%;` +
         `left:${(Math.random() * 100).toFixed(1)}%;` +
         `--dur:${(Math.random() * 4 + 3).toFixed(1)}s;` +
         `--delay:${(Math.random() * 4).toFixed(1)}s;` +
         `--min-op:${(Math.random() * 0.1).toFixed(2)};` +
         `--max-op:${(Math.random() * 0.35 + 0.15).toFixed(2)};`;
+
       container.appendChild(star);
       this.stars.push(star);
     }
@@ -183,13 +213,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   // FAKE AUTH — replace with real AuthService
   // ─────────────────────────────────────────────
 
-  private fakeAuthCall(
-    username: string,
-    password: string
-  ): Promise<boolean> {
-    return new Promise(resolve =>
-      setTimeout(() =>
-        resolve(username === 'admin' && password === 'password123'), 1800)
-    );
+  private fakeAuthCall(username: string, password: string): Promise<boolean> {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(username === 'admin' && password === 'password123');
+      }, 1800);
+    });
   }
 }

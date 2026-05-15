@@ -167,18 +167,18 @@
           <div class="role-group d-flex gap-2">
             <label class="role-chip" [class.selected]="registerForm.get('role')?.value === 'CUSTOMER'">
               <input type="radio" formControlName="role" value="CUSTOMER" hidden />
-              <span class="role-icon">🛒</span>
+              <span class="role-icon">👤</span>
               <span>Customer</span>
             </label>
             <label class="role-chip" [class.selected]="registerForm.get('role')?.value === 'RESTAURANT'">
               <input type="radio" formControlName="role" value="RESTAURANT" hidden />
-              <span class="role-icon">🍽️</span>
-              <span>Restaurant</span>
+              <span class="role-icon">🧑‍💼</span>
+              <span>Manager</span>
             </label>
             <label class="role-chip" [class.selected]="registerForm.get('role')?.value === 'DRIVER'">
               <input type="radio" formControlName="role" value="DRIVER" hidden />
-              <span class="role-icon">🚗</span>
-              <span>Driver</span>
+              <span class="role-icon">🛡️</span>
+              <span>Admin</span>
             </label>
           </div>
         </div>

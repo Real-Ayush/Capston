@@ -46,6 +46,10 @@ export class RestaurantComponent implements OnInit {
     this.getUserRoleDetails();
   }
 
+  toggleTheme() {
+    document.body.classList.toggle('light-theme');
+  }
+
   // ✅ LOAD RESTAURANTS
   loadRestaurants() {
     this.restaurantService.getAll().subscribe((data: any) => {

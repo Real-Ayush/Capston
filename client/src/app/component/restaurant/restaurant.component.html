@@ -1,1 +1,148 @@
- //Write your logic here
+<div class="page">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-brand">
+      <div class="brand-icon">🍽️</div>
+      <div class="brand-text">
+        <h1>Restaurant Management</h1>
+        <p class="brand-sub">Manage your restaurant portfolio</p>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="theme-btn" (click)="toggleTheme()">🌙 Theme</button>
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </div>
+  </header>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat-chip">
+      <span class="stat-num">{{ restaurants.length }}</span>
+      <span class="stat-label">Total Restaurants</span>
+    </div>
+  </div>
+
+  <!-- FORM CARD -->
+  <div class="card form-card">
+    <div class="card-header">
+      <div class="card-title-group">
+        <div class="card-icon">
+          {{ editingId ? '✏️' : '➕' }}
+        </div>
+        <div>
+          <h2>{{ editingId ? 'Edit Restaurant' : 'Add New Restaurant' }}</h2>
+          <p class="card-sub">
+            {{ editingId ? 'Update the details below' : 'Fill in the details to register a restaurant' }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <form [formGroup]="restaurantForm" (ngSubmit)="onSubmit()">
+
+      <p class="section-label">Basic Info</p>
+      <div class="grid grid-2">
+        <div class="field">
+          <label>Restaurant Name <span class="req">*</span></label>
+          <input placeholder="e.g. The Golden Fork" formControlName="name" required />
+        </div>
+        <div class="field">
+          <label>Location <span class="req">*</span></label>
+          <input placeholder="e.g. New York, NY" formControlName="location" required />
+        </div>
+      </div>
+
+      <p class="section-label">Contact &amp; Details</p>
+      <div class="grid grid-3">
+        <div class="field">
+          <label>Address</label>
+          <input placeholder="Street address" formControlName="address" />
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input placeholder="contact@restaurant.com" formControlName="email" />
+        </div>
+        <div class="field">
+          <label>Cuisine Type</label>
+          <input placeholder="e.g. Italian, Asian" formControlName="cusine" />
+        </div>
+        <div class="field">
+          <label>Phone Number</label>
+          <input placeholder="+1 (555) 000-0000" formControlName="phoneNumber" />
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">
+          {{ editingId ? '✦ Save Changes' : '✦ Add Restaurant' }}
+        </button>
+        <button type="button" class="btn-secondary" *ngIf="editingId" (click)="cancelEdit()">
+          Cancel
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+  <!-- TABLE CARD -->
+  <div class="card table-card">
+    <div class="card-header">
+      <div class="card-title-group">
+        <div class="card-icon">📋</div>
+        <div>
+          <h2>Restaurants List</h2>
+          <p class="card-sub">All registered restaurants</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Cuisine</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let r of restaurants; let i = index">
+            <td><span class="row-num">{{ i + 1 }}</span></td>
+            <td>
+              <div class="restaurant-name">
+                <div class="avatar">{{ r.name?.charAt(0) }}</div>
+                <span class="name-text">{{ r.name }}</span>
+              </div>
+            </td>
+            <td><span class="badge badge-loc">{{ r.location }}</span></td>
+            <td><span class="badge badge-cuisine">{{ r.cusine || '—' }}</span></td>
+            <td class="cell-muted">{{ r.email || '—' }}</td>
+            <td class="cell-muted">{{ r.phoneNumber || '—' }}</td>
+            <td>
+              <div class="action-btns">
+                <button class="btn-edit" (click)="editRestaurant(r)">Edit</button>
+                <button class="btn-delete" (click)="deleteRestaurant(r.id)">Delete</button>
+              </div>
+            </td>
+          </tr>
+
+          <tr *ngIf="restaurants.length === 0">
+            <td colspan="7">
+              <div class="empty-state">
+                <div class="empty-icon">🍽️</div>
+                <p>No restaurants yet. Add your first one above!</p>
+              </div>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

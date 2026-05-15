@@ -18,13 +18,13 @@ import { FilterRestaurantsPipe } from './filter-restaurants.pipe';
 import { FilterOrdersPipe } from './filter-orders.pipe';
 import { FilterMenuItemsPipe } from './filter-menu-items.pipe';
 import { AuthGuard } from './auth.guard';
+import { LandingComponent } from './component/landingpage/landingpage.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     RegisterComponent,
-    LoginComponent,
     RestaurantComponent,
     MenuItemComponent,
     OrderComponent,
@@ -34,7 +34,9 @@ import { AuthGuard } from './auth.guard';
     CustomerdetailsComponent,
     FilterRestaurantsPipe,
     FilterOrdersPipe,
-    FilterMenuItemsPipe
+    FilterMenuItemsPipe,
+    LandingComponent
+    
     
   ],
   imports: [
@@ -42,7 +44,9 @@ import { AuthGuard } from './auth.guard';
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    ReactiveFormsModule 
+    ReactiveFormsModule ,
+    LoginComponent,
+    
   ],
   providers: [],
   bootstrap: [AppComponent]
