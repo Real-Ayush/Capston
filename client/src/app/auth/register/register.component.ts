@@ -8,12 +8,17 @@ import { Router } from '@angular/router';
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent{
+export class RegisterComponent implements OnInit {
 
-   registerForm!: FormGroup;
+  registerForm!: FormGroup;
+
   errorMessage = '';
   successMessage = '';
   loading = false;
+
+  // ✅ ADD THESE (MISSING VARIABLES)
+  otpSent: boolean = false;
+  otp: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -31,20 +36,62 @@ export class RegisterComponent{
   }
 
   onSubmit(): void {
+
     if (this.registerForm.invalid) return;
-    this.loading = true;
-    this.auth.register(this.registerForm.value).subscribe({
-      next: () => {
-        this.successMessage = 'Registered successfully! Redirecting to login...';
-        setTimeout(() => this.router.navigate(['/login']), 1500);
-      },
-      error: err => {
-        this.errorMessage = err.error?.error || 'Registration failed.';
-        this.loading = false;
+
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    // ✅ STEP 1: SEND OTP
+    if (!this.otpSent) {
+
+      this.loading = true;
+
+      this.auth.sendOtp(this.registerForm.value.email)
+        .subscribe({
+          next: () => {
+            this.loading = false;
+            this.otpSent = true;
+            this.successMessage = 'OTP sent to your email ✅';
+          },
+          error: (err) => {
+            this.loading = false;
+            this.errorMessage = err.error?.message || 'Failed to send OTP';
+          }
+        });
+
+    }
+
+    // ✅ STEP 2: VERIFY OTP + REGISTER
+    else {
+
+      if (!this.otp) {
+        this.errorMessage = 'Please enter OTP';
+        return;
       }
-    });
+
+      this.loading = true;
+
+      const payload = {
+        ...this.registerForm.value,
+        otp: this.otp
+      };
+
+      this.auth.verifyOtpAndRegister(payload)
+        .subscribe({
+          next: () => {
+            this.loading = false;
+            this.successMessage = 'Registered successfully ✅';
+
+            setTimeout(() => {
+              this.router.navigate(['/login']);
+            }, 1500);
+          },
+          error: (err) => {
+            this.loading = false;
+            this.errorMessage = err.error?.message || 'Invalid OTP ❌';
+          }
+        });
+    }
   }
-
 }
-
-

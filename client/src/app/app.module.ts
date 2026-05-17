@@ -35,7 +35,8 @@ import { LandingComponent } from './component/landingpage/landingpage.component'
     FilterRestaurantsPipe,
     FilterOrdersPipe,
     FilterMenuItemsPipe,
-    LandingComponent
+    LandingComponent,
+    LoginComponent
     
     
   ],
@@ -44,9 +45,7 @@ import { LandingComponent } from './component/landingpage/landingpage.component'
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    ReactiveFormsModule ,
-    LoginComponent,
-    
+    ReactiveFormsModule 
   ],
   providers: [],
   bootstrap: [AppComponent]

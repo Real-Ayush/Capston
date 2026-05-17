@@ -15,6 +15,4 @@ public class AssignManagerRequest {
 	public void setUser(Long user) {
 		this.user = user;
 	}
-
-    
 }

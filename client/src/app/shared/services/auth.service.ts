@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Role, User } from '../../model/user';
+import { HttpClient } from '@angular/common/http';
+import { User } from '../../model/user';
 import { Observable, of, tap } from 'rxjs';
 import { LoginRequest } from '../../model/loginrequest';
 import { LoginResponse } from '../../model/login-response';
@@ -15,41 +15,31 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-   register(user: User): Observable<User> {
+  // ✅ REGISTER (old method - still useful if needed)
+  register(user: User): Observable<User> {
     return this.http.post<User>(`${this.apiUrl}/register`, user);
   }
-  
-  
-  getToken() {
-    return localStorage.getItem('token');
-  }
 
-  getRole() {
-    return localStorage.getItem('role');
-  }
+  // getAllUser(){
+  //   return this.http.get<User[]>(`${this.apiUrl}/`)
+  // }
 
-  getLoginStatus() {
-    return !!localStorage.getItem('token');
-  }
-
-  logout() {
-    localStorage.clear();
-  }
-
-  getLoggedInUser() {
-    return of({
-      username: localStorage.getItem('username')
+  // ✅ NEW: SEND OTP TO EMAIL
+  sendOtp(email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/send-otp`, {
+      email: email
     });
   }
-   getUserId(): number {
-    return Number(localStorage.getItem('userId'));
+
+  // ✅ NEW: VERIFY OTP + REGISTER USER
+  verifyOtpAndRegister(data: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/verify-register`, data);
   }
-  isLoggedIn(): boolean {
-    return !!this.getToken();
-  }
-    login(request: LoginRequest): Observable<LoginResponse> {
+
+  // ✅ LOGIN
+  login(request: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, request).pipe(
-      tap(res => {
+      tap((res: LoginResponse) => {
         localStorage.setItem('token', res.token);
         localStorage.setItem('role', res.role);
         localStorage.setItem('username', res.username);
@@ -57,10 +47,43 @@ export class AuthService {
       })
     );
   }
-    getUsername(): string | null {
-    return localStorage.getItem('username');
+
+  // ✅ TOKEN
+  getToken(): string | null {
+    return localStorage.getItem('token');
   }
 
+  // ✅ ROLE
+  getRole(): string | null {
+    return localStorage.getItem('role');
+  }
 
+  // ✅ LOGIN STATUS
+  getLoginStatus(): boolean {
+    return !!localStorage.getItem('token');
+  }
 
+  isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
+
+  // ✅ LOGOUT
+  logout(): void {
+    localStorage.clear();
+  }
+
+  // ✅ USER INFO
+  getLoggedInUser() {
+    return of({
+      username: localStorage.getItem('username')
+    });
+  }
+
+  getUserId(): number {
+    return Number(localStorage.getItem('userId'));
+  }
+
+  getUsername(): string | null {
+    return localStorage.getItem('username');
+  }
 }

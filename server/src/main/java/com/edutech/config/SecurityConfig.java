@@ -24,9 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtRequestFilter jwtRequestFilter;
     private final PasswordEncoder passwordEncoder;
 
-    public SecurityConfig(UserDetailsService userDetailsService,
-                          JwtRequestFilter jwtRequestFilter,
-                          PasswordEncoder passwordEncoder) {
+    public SecurityConfig(UserDetailsService userDetailsService, JwtRequestFilter jwtRequestFilter,PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
         this.jwtRequestFilter = jwtRequestFilter;
         this.passwordEncoder = passwordEncoder;

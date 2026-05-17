@@ -33,6 +33,7 @@ const routes: Routes = [
   { path: 'order', component: OrderComponent, canActivate: [AuthGuard] },
   { path: 'feedback', component: FeedbackComponent, canActivate: [AuthGuard] },
   {path:'landingpage',component: LandingComponent },
+  {path:'customerdetails',component:CustomerdetailsComponent},
   { path: '**', redirectTo: '/login' }
 ];
 

@@ -16,9 +16,10 @@
       <div class="panel-brand-row">
         <div class="panel-logo">
           <svg width="52" height="52" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="48" height="48" rx="14" fill="rgba(193,154,76,0.12)" stroke="rgba(193,154,76,0.35)" stroke-width="1"/>
-            <path d="M12 34 Q24 14 36 34" stroke="#C19A4C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-            <circle cx="24" cy="16" r="4" fill="#C19A4C"/>
+            <rect width="48" height="48" rx="14" fill="rgba(193,154,76,0.12)" stroke="rgba(193,154,76,0.35)"
+              stroke-width="1" />
+            <path d="M12 34 Q24 14 36 34" stroke="#C19A4C" stroke-width="2.5" fill="none" stroke-linecap="round" />
+            <circle cx="24" cy="16" r="4" fill="#C19A4C" />
           </svg>
         </div>
 
@@ -80,9 +81,10 @@
       <div class="card-header">
         <div class="card-logo">
           <svg width="42" height="42" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="48" height="48" rx="13" fill="rgba(193,154,76,0.1)" stroke="rgba(193,154,76,0.3)" stroke-width="1"/>
-            <path d="M12 34 Q24 14 36 34" stroke="#C19A4C" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-            <circle cx="24" cy="16" r="4" fill="#C19A4C"/>
+            <rect width="48" height="48" rx="13" fill="rgba(193,154,76,0.1)" stroke="rgba(193,154,76,0.3)"
+              stroke-width="1" />
+            <path d="M12 34 Q24 14 36 34" stroke="#C19A4C" stroke-width="2.5" fill="none" stroke-linecap="round" />
+            <circle cx="24" cy="16" r="4" fill="#C19A4C" />
           </svg>
         </div>
 
@@ -100,30 +102,20 @@
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form" novalidate>
 
         <!-- Username -->
-        <div
-          class="field-group"
-          [class.field-error]="usernameCtrl.touched && usernameCtrl.invalid"
-        >
+        <div class="field-group" [class.field-error]="usernameCtrl.touched && usernameCtrl.invalid">
           <label class="field-label" for="username">Username</label>
 
           <div class="field-wrapper">
             <span class="field-icon">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                   stroke-linejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
               </svg>
             </span>
 
-            <input
-              id="username"
-              formControlName="username"
-              type="text"
-              class="field-input"
-              placeholder="Enter your username"
-              autocomplete="username"
-            >
+            <input id="username" formControlName="username" type="text" class="field-input"
+              placeholder="Enter your username" autocomplete="username">
           </div>
 
           <p class="field-error-msg" *ngIf="usernameError">
@@ -132,49 +124,34 @@
         </div>
 
         <!-- Password -->
-        <div
-          class="field-group"
-          [class.field-error]="passwordCtrl.touched && passwordCtrl.invalid"
-        >
+        <div class="field-group" [class.field-error]="passwordCtrl.touched && passwordCtrl.invalid">
           <label class="field-label" for="password">Password</label>
 
           <div class="field-wrapper">
             <span class="field-icon">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                   stroke-linejoin="round">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
               </svg>
             </span>
 
-            <input
-              id="password"
-              formControlName="password"
-              [type]="showPassword ? 'text' : 'password'"
-              class="field-input"
-              placeholder="Enter your password"
-              autocomplete="current-password"
-            >
+            <input id="password" formControlName="password" [type]="showPassword ? 'text' : 'password'"
+              class="field-input" placeholder="Enter your password" autocomplete="current-password">
 
-            <button
-              type="button"
-              class="toggle-password"
-              (click)="togglePassword()"
-              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'"
-            >
-              <svg *ngIf="!showPassword" width="15" height="15" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                   stroke-linejoin="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                <circle cx="12" cy="12" r="3"/>
+            <button type="button" class="toggle-password" (click)="togglePassword()"
+              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+              <svg *ngIf="!showPassword" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
               </svg>
 
-              <svg *ngIf="showPassword" width="15" height="15" viewBox="0 0 24 24" fill="none"
-                   stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                   stroke-linejoin="round">
-                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-                <line x1="1" y1="1" x2="23" y2="23"/>
+              <svg *ngIf="showPassword" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                <line x1="1" y1="1" x2="23" y2="23" />
               </svg>
             </button>
           </div>
@@ -184,21 +161,23 @@
           </p>
         </div>
 
+
+        <!-- Captcha -->
+        <div class="captcha-row">
+          <div id="login-recaptcha"></div>
+        </div>
+
         <!-- Submit -->
-        <button
-          type="submit"
-          class="submit-btn"
-          [class.loading]="loading"
-          [disabled]="loading || loginForm.invalid"
-        >
+        <button type="submit" class="submit-btn" [class.loading]="loading" [disabled]="loading || loginForm.invalid || !captchaToken">
           <span class="btn-text" *ngIf="!loading">
             Sign In
           </span>
 
           <span class="btn-loader" *ngIf="loading">
-            <svg class="spinner" width="17" height="17" viewBox="0 0 24 24"
-                 fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+            <svg class="spinner" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5">
+              <path
+                d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
             </svg>
             Signing in...
           </span>
