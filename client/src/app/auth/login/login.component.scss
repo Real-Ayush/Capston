@@ -1,220 +1,582 @@
-// ─────────────────────────────────────────────
-// Login Component — Professional SCSS
-// Clean, classy, no postcss-incompatible syntax
-// ─────────────────────────────────────────────
+// ============================================================
+//  GROOV GASTROBAR — Premium Login Page
+//  Animated food-grid left panel + glassmorphism login form
+// ============================================================
 
-// Variables
-$primary:        #01696f;
-$primary-dark:   #0c4e54;
-$primary-light:  #4f98a3;
-$primary-bg:     #e5f2f2;
-$text:           #1a1a2e;
-$text-muted:     #6b7280;
-$text-faint:     #9ca3af;
-$border:         #e5e7eb;
-$surface:        #ffffff;
-$bg:             #f8f7f3;
-$error-color:    #dc2626;
-$error-bg:       #fef2f2;
-$error-border:   #fecaca;
-$radius-sm:      6px;
-$radius-md:      10px;
-$radius-lg:      16px;
-$radius-xl:      24px;
-$shadow-card:    0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -1px rgba(0, 0, 0, 0.05);
-$shadow-lg:      0 20px 60px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(0, 0, 0, 0.06);
-$transition:     all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+// ─── Design Tokens ───────────────────────────────────────────
+$c-bg:          #0d0d0d;
+$c-surface:     #141414;
+$c-panel-bg:    #0a0a0a;
 
-// ─── WRAPPER ───────────────────────────────────
+$c-orange:      #FF5E1A;
+$c-orange-dim:  #c94b14;
+$c-gold:        #C9A84C;
+$c-gold-light:  #e8c46a;
+$c-cream:       #f5ead8;
+
+$c-text:        #f0ece4;
+$c-text-muted:  #8a8070;
+$c-text-faint:  #4a4540;
+
+$c-border:      rgba(255, 255, 255, 0.07);
+$c-border-glow: rgba(255, 94, 26, 0.25);
+$c-glass-bg:    rgba(20, 18, 16, 0.82);
+$c-glass-bg2:   rgba(14, 12, 10, 0.92);
+
+$shadow-card:   0 32px 80px rgba(0,0,0,0.7), 0 8px 24px rgba(0,0,0,0.4);
+$shadow-orange: 0 0 32px rgba(255,94,26,0.18), 0 0 64px rgba(255,94,26,0.08);
+
+$dur-slow:      32s;
+$dur-med:       24s;
+$dur-fast:      18s;
+$ease-smooth:   cubic-bezier(0.4, 0, 0.2, 1);
+
+$bp-tablet:     900px;
+$bp-mobile:     600px;
+
+// ─── Fonts ───────────────────────────────────────────────────
+// Using system serif + monospace for editorial feel
+// Replace with: @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap');
+
+// ─── Keyframes ───────────────────────────────────────────────
+@keyframes scrollUp {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+
+@keyframes scrollUpFast {
+  from { transform: translateY(-8%); }
+  to   { transform: translateY(-58%); }
+}
+
+@keyframes scrollUpMid {
+  from { transform: translateY(-4%); }
+  to   { transform: translateY(-54%); }
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cardReveal {
+  from {
+    opacity: 0;
+    transform: translateX(40px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0%   { transform: translateX(-100%) skewX(-15deg); }
+  100% { transform: translateX(200%) skewX(-15deg); }
+}
+
+@keyframes accentBar {
+  from { transform: scaleX(0); transform-origin: left; }
+  to   { transform: scaleX(1); transform-origin: left; }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pulseFocus {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(255,94,26,0.2); }
+  50%       { box-shadow: 0 0 0 5px rgba(255,94,26,0.35); }
+}
+
+@keyframes brandFloat {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+@keyframes diamondSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+// ─── Base Reset ──────────────────────────────────────────────
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+// ─── Wrapper ─────────────────────────────────────────────────
 .login-wrapper {
   display: flex;
   min-height: 100vh;
-  background: $bg;
-  font-family: 'Satoshi', system-ui, sans-serif;
+  width: 100%;
+  background: $c-bg;
+  overflow: hidden;
+  position: relative;
+  font-family: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
 }
 
-// ─── LEFT PANEL ────────────────────────────────
-.login-panel {
-  flex: 1;
-  background: linear-gradient(145deg, $primary 0%, $primary-dark 60%, darken($primary-dark, 8%) 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem;
-  position: relative;
-  overflow: hidden;
+// ─── Ambient Background ──────────────────────────────────────
+.ambient-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
 
-  @media (max-width: 900px) {
+.ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+
+  &--top {
+    width: 600px;
+    height: 600px;
+    top: -200px;
+    right: 10%;
+    background: radial-gradient(circle, rgba(255,94,26,0.07) 0%, transparent 70%);
+  }
+
+  &--right {
+    width: 400px;
+    height: 400px;
+    bottom: -100px;
+    right: -100px;
+    background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+  }
+}
+
+.grid-texture {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+  background-size: 48px 48px;
+  opacity: 0.6;
+}
+
+// ─── LEFT PANEL ──────────────────────────────────────────────
+.login-panel {
+  position: relative;
+  width: 52%;
+  min-height: 100vh;
+  overflow: hidden;
+  background: $c-panel-bg;
+  flex-shrink: 0;
+
+  @media (max-width: $bp-tablet) {
+    width: 100%;
+    height: 260px;
+    min-height: unset;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+  }
+
+  @media (max-width: $bp-mobile) {
+    height: 200px;
+  }
+}
+
+// Panel overlay layers
+.panel-overlay {
+  position: absolute;
+  z-index: 10;
+  pointer-events: none;
+
+  &--top {
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: linear-gradient(to bottom, $c-panel-bg 0%, transparent 100%);
+  }
+
+  &--bottom {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: linear-gradient(to top, $c-panel-bg 0%, transparent 100%);
+  }
+
+  &--sides {
+    inset: 0;
+    background:
+      linear-gradient(to right, rgba(10,10,10,0.5) 0%, transparent 20%),
+      linear-gradient(to left,  rgba(10,10,10,0.8) 0%, transparent 25%);
+  }
+}
+
+// Brand mark
+.top-brand {
+  position: absolute;
+  top: 32px;
+  left: 36px;
+  z-index: 20;
+  animation: fadeSlideIn 0.8s $ease-smooth 0.2s both;
+
+  .brand-logo {
+    display: block;
+    font-family: 'Playfair Display', 'Georgia', serif;
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: 0.12em;
+    color: $c-text;
+    line-height: 1;
+    text-transform: uppercase;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+
+    .brand-oo {
+      color: $c-orange;
+    }
+  }
+
+  .brand-sub {
+    display: block;
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.35em;
+    color: $c-gold;
+    text-transform: uppercase;
+    margin-top: 3px;
+    padding-left: 2px;
+    opacity: 0.9;
+  }
+
+  @media (max-width: $bp-tablet) {
+    top: 16px;
+    left: 20px;
+
+    .brand-logo { font-size: 1.6rem; }
+  }
+}
+
+// Tagline overlay
+.panel-tagline {
+  position: absolute;
+  bottom: 56px;
+  left: 40px;
+  z-index: 20;
+  max-width: 320px;
+  animation: fadeSlideIn 0.9s $ease-smooth 0.5s both;
+
+  @media (max-width: $bp-tablet) {
     display: none;
   }
 }
 
-.panel-content {
-  position: relative;
-  z-index: 2;
-  color: #fff;
-  max-width: 400px;
+.tagline-ornament {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
-.panel-logo {
-  margin-bottom: 2rem;
+.ornament-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, $c-gold);
+  opacity: 0.6;
+
+  &:last-child {
+    background: linear-gradient(to left, transparent, $c-gold);
+  }
 }
 
-.panel-title {
-  font-size: clamp(2rem, 3vw, 2.75rem);
-  font-weight: 800;
-  line-height: 1.15;
-  color: #fff;
-  margin-bottom: 1rem;
-  letter-spacing: -0.02em;
+.ornament-diamond {
+  color: $c-gold;
+  font-size: 0.6rem;
+  opacity: 0.8;
 }
 
-.panel-subtitle {
-  font-size: 1.05rem;
-  color: rgba(255, 255, 255, 0.75);
-  margin-bottom: 2.5rem;
+.tagline-title {
+  font-family: 'Playfair Display', 'Georgia', serif;
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  font-weight: 900;
+  line-height: 1.05;
+  color: $c-text;
+  text-shadow: 0 4px 24px rgba(0,0,0,0.8);
+  margin-bottom: 14px;
+}
+
+.tagline-sub {
+  font-size: 0.82rem;
+  color: $c-text-muted;
+  letter-spacing: 0.05em;
   line-height: 1.6;
 }
 
-.panel-features {
+// ─── Food Grid ───────────────────────────────────────────────
+.food-grid {
+  position: absolute;
+  inset: 0;
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  gap: 12px;
+  padding: 0 12px;
+  z-index: 5;
 }
 
-.feature-item {
+.food-col {
+  flex: 1;
+  overflow: hidden;
   display: flex;
-  align-items: center;
-  gap: 0.875rem;
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.9);
-  background: rgba(255, 255, 255, 0.1);
-  padding: 0.75rem 1rem;
-  border-radius: $radius-md;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(4px);
-  transition: $transition;
+  flex-direction: column;
+
+  &--1 .food-strip { animation: scrollUp $dur-slow linear infinite; }
+  &--2 .food-strip { animation: scrollUpMid $dur-med linear infinite; }
+  &--3 .food-strip { animation: scrollUpFast $dur-fast linear infinite; }
+
+  &--2 { margin-top: -80px; }
+  &--3 { margin-top: -160px; }
+}
+
+.food-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 6px 0;
+  will-change: transform;
+}
+
+// Food cards
+.food-card {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  transform: rotate(var(--rot, 0deg)) scale(var(--sz, 1));
+  transition: transform 0.4s $ease-smooth, box-shadow 0.4s $ease-smooth;
+  cursor: default;
+  flex-shrink: 0;
+  height: 160px;
+  box-shadow:
+    0 8px 24px rgba(0,0,0,0.5),
+    0 0 0 1px rgba(255,255,255,0.04);
+
+  &--tall { height: 210px; }
+  &--wide { height: 130px; }
 
   &:hover {
-    background: rgba(255, 255, 255, 0.16);
-    transform: translateX(4px);
+    transform: rotate(0deg) scale(1.06) translateY(-4px);
+    box-shadow:
+      0 16px 48px rgba(0,0,0,0.7),
+      0 0 0 1px rgba(255,94,26,0.3),
+      0 0 24px rgba(255,94,26,0.12);
+    z-index: 2;
+
+    .food-img {
+      filter: brightness(1.15) saturate(1.2);
+      transform: scale(1.06);
+    }
   }
 }
 
-.feature-icon {
-  font-size: 1.1rem;
-  flex-shrink: 0;
+.food-img {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-color: #1e1a16;
+  transition: filter 0.4s $ease-smooth, transform 0.5s $ease-smooth;
+  will-change: transform;
 }
 
-// Decorative circles
-.panel-circles {
+// Emoji fallback (shown when no real image)
+.food-img-fallback {
   position: absolute;
   inset: 0;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.circle {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.circle-1 {
-  width: 400px;
-  height: 400px;
-  bottom: -120px;
-  right: -100px;
-}
-
-.circle-2 {
-  width: 250px;
-  height: 250px;
-  top: -60px;
-  right: 60px;
-}
-
-.circle-3 {
-  width: 150px;
-  height: 150px;
-  bottom: 100px;
-  left: 30px;
-}
-
-// ─── RIGHT FORM AREA ───────────────────────────
-.login-form-area {
-  flex: 0 0 480px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
-  background: $bg;
+  font-size: 2.8rem;
+  background: radial-gradient(ellipse at center, #1e1a14 0%, #111 100%);
+  pointer-events: none;
 
-  @media (max-width: 900px) {
-    flex: 1;
-    padding: 1.5rem;
+  // Hide when parent has background-image loaded
+  // (In production, remove this div when images are set)
+}
+
+.food-img[style*="background-image: url('assets/"] .food-img-fallback {
+  // background-image is set but may not load — keep fallback visible as override
+}
+
+// ─── RIGHT FORM AREA ─────────────────────────────────────────
+.login-form-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  position: relative;
+  z-index: 10;
+  animation: cardReveal 0.9s $ease-smooth 0.3s both;
+
+  @media (max-width: $bp-tablet) {
+    padding: 280px 20px 40px;
+    align-items: flex-start;
+    width: 100%;
+    position: relative;
+    z-index: 5;
+  }
+
+  @media (max-width: $bp-mobile) {
+    padding: 220px 16px 32px;
   }
 }
 
-// ─── CARD ──────────────────────────────────────
+// ─── Card ────────────────────────────────────────────────────
 .login-card {
   width: 100%;
-  max-width: 400px;
-  background: $surface;
-  border-radius: $radius-xl;
-  padding: 2.5rem;
-  box-shadow: $shadow-lg;
-  border: 1px solid $border;
+  max-width: 440px;
+  background: $c-glass-bg;
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid $c-border;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  border-radius: 24px;
+  box-shadow: $shadow-card;
+  overflow: hidden;
+  position: relative;
 
-  @media (max-width: 480px) {
-    padding: 2rem 1.5rem;
-    border-radius: $radius-lg;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    background: linear-gradient(
+      135deg,
+      rgba(255,94,26,0.04) 0%,
+      transparent 50%,
+      rgba(201,168,76,0.03) 100%
+    );
+    pointer-events: none;
   }
 }
 
-// ─── CARD HEADER ───────────────────────────────
+// Accent bar
+.card-accent-bar {
+  height: 3px;
+  background: rgba(255,255,255,0.04);
+  overflow: hidden;
+  position: relative;
+}
+
+.accent-bar-fill {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, $c-orange, $c-gold, $c-orange);
+  background-size: 200% 100%;
+  animation: accentBar 0.8s $ease-smooth 0.6s both;
+}
+
+// Card header
 .card-header {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid $border;
+  gap: 18px;
+  padding: 28px 32px 20px;
+
+  @media (max-width: $bp-mobile) {
+    padding: 24px 20px 16px;
+    gap: 14px;
+  }
 }
 
 .card-logo {
   flex-shrink: 0;
+  filter: drop-shadow(0 2px 8px rgba(255,94,26,0.3));
+  animation: brandFloat 4s ease-in-out infinite;
+}
+
+.card-header-text {
+  flex: 1;
+}
+
+.card-eyebrow {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: $c-gold;
+  margin-bottom: 4px;
+  opacity: 0.9;
 }
 
 .card-title {
-  font-size: 1.375rem;
-  font-weight: 800;
-  color: $text;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  margin-bottom: 0.2rem;
+  font-family: 'Playfair Display', 'Georgia', serif;
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: $c-text;
+  line-height: 1.15;
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
 }
 
 .card-subtitle {
-  font-size: 0.85rem;
-  color: $text-muted;
+  font-size: 0.78rem;
+  color: $c-text-muted;
+  line-height: 1.5;
 }
 
-// ─── ERROR BANNER ──────────────────────────────
+// Divider
+.modal-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 32px;
+  margin: 4px 0;
+
+  &--sm {
+    margin: 20px 0 12px;
+  }
+
+  @media (max-width: $bp-mobile) {
+    padding: 0 20px;
+  }
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, $c-border, transparent);
+}
+
+.divider-diamond {
+  font-size: 0.5rem;
+  color: $c-gold;
+  opacity: 0.5;
+}
+
+// Error banner
 .error-banner {
   display: flex;
   align-items: center;
-  gap: 0.625rem;
-  background: $error-bg;
-  border: 1px solid $error-border;
-  color: $error-color;
-  padding: 0.75rem 1rem;
-  border-radius: $radius-md;
-  font-size: 0.875rem;
-  font-weight: 500;
-  margin-bottom: 1.5rem;
-  animation: slideDown 0.2s ease;
+  gap: 10px;
+  margin: 8px 32px 0;
+  padding: 12px 16px;
+  background: rgba(220, 38, 38, 0.12);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  border-radius: 12px;
+  font-size: 0.82rem;
+  color: #fca5a5;
+  animation: fadeSlideIn 0.3s $ease-smooth;
+
+  @media (max-width: $bp-mobile) {
+    margin-inline: 20px;
+  }
 }
 
 .error-icon {
@@ -222,232 +584,377 @@ $transition:     all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   flex-shrink: 0;
 }
 
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-// ─── FORM ──────────────────────────────────────
+// ─── Form ────────────────────────────────────────────────────
 .login-form {
+  padding: 20px 32px 4px;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 20px;
+
+  @media (max-width: $bp-mobile) {
+    padding: 16px 20px 4px;
+    gap: 16px;
+  }
 }
 
-// ─── FIELD GROUP ───────────────────────────────
+// Field group
 .field-group {
   display: flex;
   flex-direction: column;
-  gap: 0.375rem;
+  gap: 8px;
 
   &.field-error {
-    .field-wrapper {
-      border-color: $error-color;
-      background: $error-bg;
+    .field-input {
+      border-color: rgba(220, 38, 38, 0.5);
+      background: rgba(220, 38, 38, 0.05);
+    }
 
-      .field-icon svg {
-        color: $error-color;
-      }
+    .field-label {
+      color: #fca5a5;
     }
   }
 }
 
 .field-label {
-  font-size: 0.78rem;
-  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: $text-muted;
+  color: $c-text-muted;
+  transition: color 0.2s;
+
+  .field-group:focus-within & {
+    color: $c-gold;
+  }
+}
+
+.label-index {
+  font-family: 'DM Mono', 'Courier New', monospace;
+  font-size: 0.65rem;
+  color: $c-orange;
+  opacity: 0.8;
+  letter-spacing: 0.05em;
 }
 
 .field-wrapper {
+  position: relative;
   display: flex;
   align-items: center;
-  border: 1.5px solid $border;
-  border-radius: $radius-md;
-  background: $surface;
-  transition: $transition;
-  overflow: hidden;
-
-  &:focus-within {
-    border-color: $primary;
-    box-shadow: 0 0 0 3px rgba($primary, 0.12);
-    background: $surface;
-  }
-
-  &:hover:not(:focus-within) {
-    border-color: darken($border, 10%);
-  }
 }
 
 .field-icon {
+  position: absolute;
+  left: 14px;
+  color: $c-text-muted;
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 44px;
-  flex-shrink: 0;
-  color: $text-faint;
+  pointer-events: none;
+  transition: color 0.2s;
+  z-index: 1;
 
-  svg {
-    transition: color 0.2s;
+  .field-group:focus-within & {
+    color: $c-orange;
   }
 }
 
 .field-input {
-  flex: 1;
-  padding: 0.75rem 0.75rem 0.75rem 0;
-  border: none;
-  background: transparent;
+  width: 100%;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid $c-border;
+  border-radius: 14px;
+  padding: 0 44px 0 42px;
   font-size: 0.9rem;
-  color: $text;
+  color: $c-text;
+  outline: none;
+  transition:
+    border-color 0.25s,
+    background 0.25s,
+    box-shadow 0.25s;
   font-family: inherit;
-  min-width: 0;
 
   &::placeholder {
-    color: $text-faint;
+    color: $c-text-faint;
   }
 
   &:focus {
-    outline: none;
+    border-color: rgba(255, 94, 26, 0.5);
+    background: rgba(255, 94, 26, 0.04);
+    box-shadow:
+      0 0 0 3px rgba(255, 94, 26, 0.12),
+      0 4px 16px rgba(0, 0, 0, 0.3);
+    animation: pulseFocus 2s ease-in-out infinite;
   }
 
-  // Override browser autofill styling
+  &:focus + .field-focus-ring {}
+
+  // Override autofill style
   &:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 30px $surface inset;
-    -webkit-text-fill-color: $text;
+    -webkit-box-shadow: 0 0 0 50px #1a1612 inset;
+    -webkit-text-fill-color: $c-text;
   }
 }
 
-// Focus-within state: icon color follows
-.field-wrapper:focus-within .field-icon svg {
-  color: $primary;
+.field-focus-ring {
+  display: none;
 }
 
+// Toggle password
 .toggle-password {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 100%;
+  position: absolute;
+  right: 12px;
   background: none;
   border: none;
   cursor: pointer;
-  color: $text-faint;
-  transition: color 0.2s;
-  flex-shrink: 0;
-  padding: 0;
-
-  &:hover {
-    color: $text-muted;
-  }
-}
-
-.field-error-msg {
-  font-size: 0.78rem;
-  color: $error-color;
-  font-weight: 500;
-  animation: slideDown 0.15s ease;
-}
-
-// ─── SUBMIT BUTTON ─────────────────────────────
-.submit-btn {
+  color: $c-text-muted;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
-  width: 100%;
-  padding: 0.875rem 1.5rem;
-  background: $primary;
-  color: #fff;
-  border: none;
-  border-radius: $radius-md;
-  font-size: 0.9rem;
-  font-weight: 700;
-  font-family: inherit;
-  cursor: pointer;
-  transition: $transition;
-  letter-spacing: 0.02em;
-  margin-top: 0.5rem;
-  position: relative;
-  overflow: hidden;
+  padding: 6px;
+  border-radius: 8px;
+  transition: color 0.2s, background 0.2s;
 
-  // Subtle shimmer overlay on hover
-  &::after {
+  &:hover {
+    color: $c-orange;
+    background: rgba(255, 94, 26, 0.1);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $c-orange;
+    outline-offset: 2px;
+  }
+}
+
+// Form meta (forgot password)
+.form-meta {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -8px;
+}
+
+.forgot-link {
+  font-size: 0.75rem;
+  color: $c-text-muted;
+  text-decoration: none;
+  transition: color 0.2s;
+  letter-spacing: 0.02em;
+
+  &:hover {
+    color: $c-orange;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $c-orange;
+    border-radius: 4px;
+    outline-offset: 2px;
+  }
+}
+
+// ─── Submit Button ───────────────────────────────────────────
+.submit-btn {
+  position: relative;
+  width: 100%;
+  height: 56px;
+  background: linear-gradient(135deg, $c-orange 0%, $c-orange-dim 100%);
+  border: none;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #fff;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    transform 0.2s $ease-smooth,
+    box-shadow 0.2s $ease-smooth,
+    opacity 0.2s;
+  box-shadow:
+    0 4px 20px rgba(255, 94, 26, 0.35),
+    0 2px 8px rgba(0,0,0,0.3);
+
+  &::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: rgba(255, 255, 255, 0);
-    transition: background 0.2s;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%);
+    pointer-events: none;
   }
 
   &:hover:not(:disabled) {
-    background: $primary-dark;
-    transform: translateY(-1px);
-    box-shadow: 0 8px 24px rgba($primary, 0.35);
+    transform: translateY(-2px) scale(1.01);
+    box-shadow:
+      0 8px 32px rgba(255, 94, 26, 0.5),
+      0 4px 16px rgba(0,0,0,0.4);
 
-    &::after {
-      background: rgba(255, 255, 255, 0.05);
+    .submit-btn__shimmer {
+      animation: shimmer 0.7s ease-in-out;
     }
   }
 
   &:active:not(:disabled) {
-    transform: translateY(0);
-    box-shadow: 0 2px 8px rgba($primary, 0.25);
+    transform: translateY(0) scale(0.99);
   }
 
   &:disabled {
-    opacity: 0.55;
+    opacity: 0.45;
     cursor: not-allowed;
-    transform: none;
     box-shadow: none;
   }
 
-  &.loading {
-    background: $primary-dark;
+  &:focus-visible {
+    outline: 3px solid $c-gold;
+    outline-offset: 3px;
   }
 }
 
-.btn-text {
+.submit-btn__text {
   position: relative;
   z-index: 1;
-}
-
-.btn-loader {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  position: relative;
-  z-index: 1;
+  justify-content: center;
+  gap: 8px;
 }
 
-// Spinner animation
+.submit-btn__shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(255,255,255,0.25) 50%,
+    transparent 80%
+  );
+  transform: translateX(-100%) skewX(-15deg);
+  pointer-events: none;
+}
+
+// Spinner
 .spinner {
-  animation: spin 0.8s linear infinite;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
 }
 
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
-// ─── CARD FOOTER ───────────────────────────────
+// ─── Card Footer ─────────────────────────────────────────────
 .card-footer {
-  margin-top: 1.75rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid $border;
+  padding: 4px 32px 28px;
   text-align: center;
-  font-size: 0.875rem;
-  color: $text-muted;
+
+  p {
+    font-size: 0.8rem;
+    color: $c-text-muted;
+    line-height: 1.6;
+  }
+
+  @media (max-width: $bp-mobile) {
+    padding: 4px 20px 24px;
+  }
 }
 
 .register-link {
-  color: $primary;
-  font-weight: 700;
+  color: $c-orange;
   text-decoration: none;
-  transition: color 0.15s;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: color 0.2s, text-shadow 0.2s;
 
   &:hover {
-    color: $primary-dark;
-    text-decoration: underline;
+    color: $c-gold;
+    text-shadow: 0 0 12px rgba(201,168,76,0.4);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $c-orange;
+    border-radius: 3px;
+    outline-offset: 2px;
+  }
+}
+
+// ─── Reduced Motion ──────────────────────────────────────────
+@media (prefers-reduced-motion: reduce) {
+  .food-strip,
+  .food-col--1 .food-strip,
+  .food-col--2 .food-strip,
+  .food-col--3 .food-strip {
+    animation: none !important;
+  }
+
+  .card-logo,
+  .submit-btn__shimmer {
+    animation: none !important;
+  }
+
+  .login-form-area,
+  .login-card,
+  .top-brand,
+  .panel-tagline {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .field-input:focus {
+    animation: none !important;
+  }
+}
+
+// ─── Responsive — Tablet ─────────────────────────────────────
+@media (max-width: $bp-tablet) {
+  .login-wrapper {
+    flex-direction: column;
+  }
+
+  .login-form-area {
+    flex: unset;
+    width: 100%;
+    min-height: calc(100vh - 220px);
+    background: linear-gradient(to bottom, transparent 0%, $c-bg 8%);
+  }
+
+  .login-card {
+    max-width: 500px;
+  }
+
+  .food-col--3 {
+    display: none;
+  }
+
+  .food-col--2 {
+    margin-top: -40px;
+  }
+}
+
+// ─── Responsive — Mobile ─────────────────────────────────────
+@media (max-width: $bp-mobile) {
+  .login-panel {
+    height: 200px;
+  }
+
+  .food-col--2 {
+    display: none;
+  }
+
+  .food-col--1 {
+    margin-top: 0;
+  }
+
+  .login-form-area {
+    padding-top: 210px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
   }
 }

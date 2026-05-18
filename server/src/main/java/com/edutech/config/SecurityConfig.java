@@ -57,6 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.POST, "/api/restaurants").hasAnyAuthority("ADMIN")
             .antMatchers(HttpMethod.PUT, "/api/restaurants/**").hasAuthority("ADMIN")
             .antMatchers(HttpMethod.DELETE, "/api/restaurants/**").hasAuthority("ADMIN")
+            .antMatchers(HttpMethod.GET, "/api/restaurants/**").permitAll()
             
             // Order access
 // Order access
