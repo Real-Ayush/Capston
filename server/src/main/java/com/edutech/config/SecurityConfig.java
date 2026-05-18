@@ -24,7 +24,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtRequestFilter jwtRequestFilter;
     private final PasswordEncoder passwordEncoder;
 
-    public SecurityConfig(UserDetailsService userDetailsService, JwtRequestFilter jwtRequestFilter,PasswordEncoder passwordEncoder) {
+    public SecurityConfig(UserDetailsService userDetailsService,
+                          JwtRequestFilter jwtRequestFilter,
+                          PasswordEncoder passwordEncoder) {
         this.userDetailsService = userDetailsService;
         this.jwtRequestFilter = jwtRequestFilter;
         this.passwordEncoder = passwordEncoder;
@@ -57,11 +59,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.DELETE, "/api/restaurants/**").hasAuthority("ADMIN")
             
             // Order access
-            .antMatchers(HttpMethod.POST, "/api/orders").hasAuthority("CUSTOMER")
-            .antMatchers(HttpMethod.GET, "/api/orders/**").hasAnyAuthority("CUSTOMER", "MANAGER")
-            .antMatchers(HttpMethod.PUT, "/api/orders/**").hasAnyAuthority("MANAGER","CUSTOMER")
-            .antMatchers(HttpMethod.GET, "/api/orders/userId/*").hasAnyAuthority("CUSTOMER")
-            .antMatchers(HttpMethod.GET, "/api/auth/userDetails/**").hasAnyAuthority("MANAGER","ADMIN","CUSTOMER")
+// Order access
+
+.antMatchers(HttpMethod.POST, "/api/orders")
+.hasAuthority("CUSTOMER")
+
+.antMatchers(HttpMethod.GET, "/api/orders")
+.hasAnyAuthority("ADMIN", "MANAGER", "CUSTOMER")
+
+.antMatchers(HttpMethod.GET, "/api/orders/**")
+.hasAnyAuthority("ADMIN", "MANAGER", "CUSTOMER")
+
+.antMatchers(HttpMethod.PUT, "/api/orders/*/cancel")
+.hasAuthority("CUSTOMER")
+
+.antMatchers(HttpMethod.PUT, "/api/orders/*/status/*")
+.hasAuthority("MANAGER")
+
+.antMatchers(HttpMethod.GET, "/api/auth/userDetails/**")
+.hasAnyAuthority("MANAGER", "ADMIN", "CUSTOMER")
+            
+
 
             // MenuItem access
             .antMatchers(HttpMethod.GET, "/api/menu-items/**").hasAnyAuthority("CUSTOMER","MANAGER")
@@ -71,9 +89,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             
          //customer feed back
             
-            .antMatchers(HttpMethod.GET, "/api/feedback/menu/*").hasAnyAuthority("CUSTOMER","ADMIN")
-            .antMatchers(HttpMethod.GET, "/api/feedback").hasAnyAuthority("CUSTOMER","ADMIN")
-            .antMatchers(HttpMethod.POST, "/api/feedback").hasAnyAuthority("CUSTOMER","ADMIN")
+
+.antMatchers(HttpMethod.GET, "/api/feedback/menu/*")
+.hasAnyAuthority("CUSTOMER", "ADMIN", "MANAGER")
+
+.antMatchers(HttpMethod.GET, "/api/feedback")
+.hasAnyAuthority("CUSTOMER", "ADMIN", "MANAGER")
+
+.antMatchers(HttpMethod.POST, "/api/feedback")
+.hasAnyAuthority("CUSTOMER", "ADMIN")
+
+.antMatchers(HttpMethod.PUT, "/api/feedback/*/reply")
+.hasAuthority("ADMIN")
+
             
             // Email
             .antMatchers(HttpMethod.POST, "/api/send-email").hasAnyAuthority("ADMIN")

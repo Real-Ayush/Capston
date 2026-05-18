@@ -33,4 +33,16 @@ public class FeedbackServiceImpl implements FeedbackService{
 		return list;
 	}
 
+	
+  @Override
+    public Feedback replyToFeedback(Long id, String response) {
+
+        Feedback feedback = feedbackRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Feedback not found with id: " + id));
+
+        feedback.setResponse(response);
+
+        return feedbackRepository.save(feedback);
+    }
+
 }

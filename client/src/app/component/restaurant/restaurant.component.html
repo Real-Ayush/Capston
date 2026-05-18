@@ -39,45 +39,167 @@
       </div>
     </div>
 
+    <!-- SUCCESS MESSAGE -->
+    <div class="message success" *ngIf="successMessage">
+      {{ successMessage }}
+    </div>
+
+    <!-- ERROR MESSAGE -->
+    <div class="message error" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
     <form [formGroup]="restaurantForm" (ngSubmit)="onSubmit()">
 
       <p class="section-label">Basic Info</p>
+
       <div class="grid grid-2">
+
+        <!-- RESTAURANT NAME -->
         <div class="field">
           <label>Restaurant Name <span class="req">*</span></label>
-          <input placeholder="e.g. The Golden Fork" formControlName="name" required />
+
+          <input
+            placeholder="e.g. The Golden Fork"
+            formControlName="name"
+            required
+          />
+
+          <small
+            class="validation-error"
+            *ngIf="f['name'].touched && f['name'].errors?.['required']">
+            Restaurant name is required.
+          </small>
+
+          <small
+            class="validation-error"
+            *ngIf="f['name'].touched && f['name'].errors?.['minlength']">
+            Restaurant name must be at least 3 characters.
+          </small>
         </div>
+
+        <!-- LOCATION -->
         <div class="field">
           <label>Location <span class="req">*</span></label>
-          <input placeholder="e.g. New York, NY" formControlName="location" required />
+
+          <input
+            placeholder="e.g. New York, NY"
+            formControlName="location"
+            required
+          />
+
+          <small
+            class="validation-error"
+            *ngIf="f['location'].touched && f['location'].errors?.['required']">
+            Location is required.
+          </small>
         </div>
+
       </div>
 
       <p class="section-label">Contact &amp; Details</p>
+
       <div class="grid grid-3">
+
+        <!-- ADDRESS -->
         <div class="field">
-          <label>Address</label>
-          <input placeholder="Street address" formControlName="address" />
+          <label>Address <span class="req">*</span></label>
+
+          <input
+            placeholder="Street address"
+            formControlName="address"
+          />
+
+          <small
+            class="validation-error"
+            *ngIf="f['address'].touched && f['address'].errors?.['required']">
+            Address is required.
+          </small>
         </div>
+
+        <!-- EMAIL -->
         <div class="field">
-          <label>Email</label>
-          <input placeholder="contact@restaurant.com" formControlName="email" />
+          <label>Email <span class="req">*</span></label>
+
+          <input
+            placeholder="contact@restaurant.com"
+            formControlName="email"
+          />
+
+          <small
+            class="validation-error"
+            *ngIf="f['email'].touched && f['email'].errors?.['required']">
+            Email is required.
+          </small>
+
+          <small
+            class="validation-error"
+            *ngIf="f['email'].touched && f['email'].errors?.['email']">
+            Enter a valid email address.
+          </small>
         </div>
+
+        <!-- CUISINE -->
         <div class="field">
-          <label>Cuisine Type</label>
-          <input placeholder="e.g. Italian, Asian" formControlName="cusine" />
+          <label>Cuisine Type <span class="req">*</span></label>
+
+          <input
+            placeholder="e.g. Italian, Asian"
+            formControlName="cusine"
+          />
+
+          <small
+            class="validation-error"
+            *ngIf="f['cusine'].touched && f['cusine'].errors?.['required']">
+            Cuisine type is required.
+          </small>
         </div>
+
+        <!-- PHONE NUMBER -->
         <div class="field">
-          <label>Phone Number</label>
-          <input placeholder="+1 (555) 000-0000" formControlName="phoneNumber" />
+          <label>Phone Number <span class="req">*</span></label>
+
+          <input
+            placeholder="9876543210"
+            formControlName="phoneNumber"
+            maxlength="10"
+          />
+
+          <small
+            class="validation-error"
+            *ngIf="f['phoneNumber'].touched && f['phoneNumber'].errors?.['required']">
+            Phone number is required.
+          </small>
+
+          <small
+            class="validation-error"
+            *ngIf="f['phoneNumber'].touched && f['phoneNumber'].errors?.['pattern']">
+            Phone number must be exactly 10 digits.
+          </small>
         </div>
+
       </div>
 
       <div class="form-actions">
-        <button type="submit" class="btn-primary">
-          {{ editingId ? '✦ Save Changes' : '✦ Add Restaurant' }}
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="isSubmitting">
+
+          {{
+            isSubmitting
+              ? 'Please wait...'
+              : editingId
+                ? '✦ Save Changes'
+                : '✦ Add Restaurant'
+          }}
         </button>
-        <button type="button" class="btn-secondary" *ngIf="editingId" (click)="cancelEdit()">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          *ngIf="editingId"
+          (click)="cancelEdit()">
           Cancel
         </button>
       </div>
@@ -110,23 +232,52 @@
             <th>Actions</th>
           </tr>
         </thead>
+
         <tbody>
+
           <tr *ngFor="let r of restaurants; let i = index">
-            <td><span class="row-num">{{ i + 1 }}</span></td>
+            <td>
+              <span class="row-num">{{ i + 1 }}</span>
+            </td>
+
             <td>
               <div class="restaurant-name">
                 <div class="avatar">{{ r.name?.charAt(0) }}</div>
                 <span class="name-text">{{ r.name }}</span>
               </div>
             </td>
-            <td><span class="badge badge-loc">{{ r.location }}</span></td>
-            <td><span class="badge badge-cuisine">{{ r.cusine || '—' }}</span></td>
-            <td class="cell-muted">{{ r.email || '—' }}</td>
-            <td class="cell-muted">{{ r.phoneNumber || '—' }}</td>
+
+            <td>
+              <span class="badge badge-loc">{{ r.location }}</span>
+            </td>
+
+            <td>
+              <span class="badge badge-cuisine">{{ r.cusine || '—' }}</span>
+            </td>
+
+            <td class="cell-muted">
+              {{ r.email || '—' }}
+            </td>
+
+            <td class="cell-muted">
+              {{ r.phoneNumber || '—' }}
+            </td>
+
             <td>
               <div class="action-btns">
-                <button class="btn-edit" (click)="editRestaurant(r)">Edit</button>
-                <button class="btn-delete" (click)="deleteRestaurant(r.id)">Delete</button>
+                <button
+                  type="button"
+                  class="btn-edit"
+                  (click)="editRestaurant(r)">
+                  Edit
+                </button>
+
+                <button
+                  type="button"
+                  class="btn-delete"
+                  (click)="deleteRestaurant(r.id)">
+                  Delete
+                </button>
               </div>
             </td>
           </tr>

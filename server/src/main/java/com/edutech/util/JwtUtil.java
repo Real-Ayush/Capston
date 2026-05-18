@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import com.edutech.model.User;
 import com.edutech.repository.UserRepository;
 
-import exception.ResourceNotFoundException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -32,7 +31,7 @@ public class JwtUtil {
     public String generateToken(String username) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration * 1000);
-        User user = userRepository.findByUsername(username).orElseThrow(()->new ResourceNotFoundException("User not found with username: " + username));
+        User user = userRepository.findByUsername(username).orElseThrow(()->new RuntimeException("User not found with username: " + username));
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("sub", username);

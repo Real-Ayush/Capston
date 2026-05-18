@@ -1,9 +1,11 @@
 package com.edutech.controller;
 
 import java.security.Principal;
+import java.util.List;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,12 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.edutech.dto.LoginRequest;
 import com.edutech.dto.LoginResponse;
 import com.edutech.model.User;
-import com.edutech.service.RecaptchaService;
 import com.edutech.service.UserService;
 import com.edutech.util.JwtUtil;
 
@@ -27,22 +27,14 @@ import com.edutech.util.JwtUtil;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final UserService userService;
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
-    private final RecaptchaService recaptchaService;
+    @Autowired
+    private UserService userService;
 
-    public AuthController(
-            UserService userService,
-            AuthenticationManager authenticationManager,
-            JwtUtil jwtUtil,
-            RecaptchaService recaptchaService
-    ) {
-        this.userService = userService;
-        this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
-        this.recaptchaService = recaptchaService;
-    }
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@Valid @RequestBody User user) {
@@ -55,21 +47,10 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
 
-        boolean captchaValid = recaptchaService.verify(loginRequest.getCaptchaToken());
-
-        if (!captchaValid) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Captcha verification failed. Please try again."
-            );
-        }
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(),
-                        loginRequest.getPassword()
-                )
-        );
+                        loginRequest.getPassword()));
 
         String username = authentication.getName();
 
@@ -82,8 +63,7 @@ public class AuthController {
                 token,
                 user.getUsername(),
                 user.getEmail(),
-                user.getRole()
-        );
+                user.getRole());
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -100,9 +80,15 @@ public class AuthController {
                 null,
                 user.getUsername(),
                 user.getEmail(),
-                user.getRole()
-        );
+                user.getRole());
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getAll() {
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
+    }
+
 }

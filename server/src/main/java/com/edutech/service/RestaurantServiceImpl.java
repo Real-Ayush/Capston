@@ -6,21 +6,16 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.edutech.dto.AssignManagerRequest;
+import com.edutech.exception.ResourceNotFoundException;
 import com.edutech.model.Restaurant;
-import com.edutech.model.User;
 import com.edutech.repository.RestaurantRepository;
-import com.edutech.repository.UserRepository;
 
-import exception.ResourceNotFoundException;
+// import exception.ResourceNotFoundException;
 
 @Service
 public class RestaurantServiceImpl implements RestaurantService{
 	@Autowired
 	private RestaurantRepository restaurantRepository;
-
-	@Autowired
-	private UserRepository userRepository;
 
 	@Override
 	public Restaurant createRestaurant(Restaurant restaurant) {
@@ -44,7 +39,8 @@ public class RestaurantServiceImpl implements RestaurantService{
 		r.setLocation(restaurant.getLocation());
 		r.setManager(restaurant.getManager());
 		r.setName(restaurant.getName());
-		r.setPhNumber(restaurant.getPhNumber());
+		r.setPhoneNumber(restaurant.getPhoneNumber());
+		r.setCusine(restaurant.getCusine());
 
 		return restaurantRepository.save(r);
 
@@ -54,18 +50,6 @@ public class RestaurantServiceImpl implements RestaurantService{
 	public void deleteRestaurant(long id) {
 		restaurantRepository.deleteById(id);
 	}
-
-	public Restaurant assignManager(AssignManagerRequest request) {
-
-		Restaurant restaurant = restaurantRepository.findById(request.getRestaurantId())
-				.orElseThrow(() -> new RuntimeException("Restaurant not found with id: " + request.getRestaurantId()));
-
-		User manager = userRepository.findById(request.getUser())
-				.orElseThrow(() -> new RuntimeException(
-						"User not found with id: " + request.getUser()));
-
-		restaurant.setManager(manager);
-
-		return restaurantRepository.save(restaurant);
-	}
+	
+	
 }

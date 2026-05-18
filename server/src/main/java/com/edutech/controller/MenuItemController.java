@@ -32,7 +32,7 @@ public class MenuItemController {
 
     @GetMapping("/{id}")
     public ResponseEntity<MenuItem> getMenuItemById(@PathVariable Long id) {
-        MenuItem item = service.getMenuItemsByRestaurant(id);
+        MenuItem item = service.getMenuItemById(id);
         return new ResponseEntity<>(item, HttpStatus.OK);
     }
 
@@ -44,6 +44,13 @@ public class MenuItemController {
         MenuItem updatedItem = service.updateMenuItem(id, item);
         return new ResponseEntity<>(updatedItem, HttpStatus.OK);
     }
+    
+  @GetMapping("/restaurant/{restaurantId}")
+    public ResponseEntity<List<MenuItem>> getMenuItemsByRestaurant(@PathVariable Long restaurantId) {
+        List<MenuItem> items = service.getMenuItemsByRestaurant(restaurantId);
+        return new ResponseEntity<>(items, HttpStatus.OK);
+    }
+
 
 
     @DeleteMapping("/{id}")

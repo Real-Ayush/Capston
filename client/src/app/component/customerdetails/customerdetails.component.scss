@@ -191,18 +191,14 @@
 }
 
 /* 🔙 Back Button */
-
 .btn-back {
   width: 42px;
   height: 42px;
   border-radius: 50%;
-
   border: 1px solid rgba(201, 169, 110, 0.5);
-
   background: radial-gradient(circle at 30% 30%,
       rgba(201, 169, 110, 0.35),
       rgba(201, 169, 110, 0.08));
-
   color: var(--gold);
   display: flex;
   align-items: center;
@@ -211,7 +207,6 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
-
   transition: all 0.3s ease;
 }
 
@@ -224,7 +219,6 @@
   background: conic-gradient(transparent,
       rgba(201, 169, 110, 0.6),
       transparent);
-
   opacity: 0;
   transition: 0.3s ease;
 }
@@ -235,7 +229,6 @@
   box-shadow:
     0 0 18px var(--gold-glow),
     0 8px 28px rgba(0, 0, 0, 0.7);
-
   color: #fff;
 }
 
@@ -243,11 +236,10 @@
   opacity: 1;
 }
 
-/* click */ .btn-back:active {
+/* click */
+.btn-back:active {
   transform: translateX(-2px) scale(0.95);
 }
-
-
 
 /* Align brand nicely */
 .nav-brand {
@@ -268,7 +260,6 @@
   display: flex;
   align-items: center;
 }
-
 
 /* ---------- Page Content ----------------------------------- */
 .page-content {

@@ -1,6 +1,7 @@
 package com.edutech.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,4 +52,22 @@ public class FeedbackController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
+ @PutMapping("/{id}/reply")
+    public ResponseEntity<?> replyToFeedback(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> request) {
+
+        try {
+            String response = request.get("response");
+
+            Feedback updatedFeedback = service.replyToFeedback(id, response);
+
+            return new ResponseEntity<>(updatedFeedback, HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
+

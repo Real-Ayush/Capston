@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.edutech.exception.ResourceNotFoundException;
 import com.edutech.model.MenuItem;
 import com.edutech.repository.MenuItemRepository;
 
@@ -25,13 +26,13 @@ public class MenuItemServiceImpl implements MenuItemService {
     }
 
     @Override
-    public MenuItem  getMenuItemsByRestaurant(Long id) {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("MenuItem not found with id: " + id));
+    public MenuItem getMenuItemById(Long id) {
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("MenuItem not found with id: " + id));
     }
 
     @Override
     public MenuItem updateMenuItem(Long id, MenuItem item) {
-        MenuItem existingItem = repository.findById(id).orElseThrow(() -> new RuntimeException("MenuItem not found with id: " + id));
+        MenuItem existingItem = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("MenuItem not found with id: " + id));
         existingItem.setMenuType(item.getMenuType());
         existingItem.setName(item.getName());
         existingItem.setPrice(item.getPrice());
@@ -42,8 +43,15 @@ public class MenuItemServiceImpl implements MenuItemService {
 
     @Override
     public void deleteMenuItem(Long id) {
-        MenuItem existingItem = repository.findById(id).orElseThrow(() -> new RuntimeException("MenuItem not found with id: " + id));
+        MenuItem existingItem = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("MenuItem not found with id: " + id));
         repository.delete(existingItem);
     }
+
+   
+@Override
+public List<MenuItem> getMenuItemsByRestaurant(Long restaurantId) {
+    return repository.findByRestaurantId(restaurantId);
+}
+
 }
 

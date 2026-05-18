@@ -9,4 +9,3 @@ import com.edutech.model.Feedback;
 public interface FeedbackRepository extends JpaRepository<Feedback,Long> {
    List<Feedback> findByMenuItemId(Long menuItemId);
 }
-

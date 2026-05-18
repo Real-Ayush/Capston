@@ -1,30 +1,31 @@
+<!-- Requires in index.html:
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+-->
+
 <div class="register-shell d-flex align-items-center justify-content-center min-vh-100">
 
-  <!-- Background -->
+  <!-- Background geometry -->
   <span class="geo geo-1"></span>
   <span class="geo geo-2"></span>
   <span class="geo geo-3"></span>
 
   <div class="register-card">
 
-    <!-- Left Panel -->
+    <!-- Left decorative panel -->
     <div class="card-panel d-none d-md-flex flex-column justify-content-between">
       <div class="panel-logo">✦</div>
-
       <div class="panel-text">
-        <p class="panel-quote">
-          "Every great journey begins with a single step."
-        </p>
+        <p class="panel-quote">"Every great journey begins with a single step."</p>
         <span class="panel-line"></span>
         <p class="panel-sub">Join thousands of members today.</p>
       </div>
-
       <div class="panel-dots">
         <span></span><span></span><span></span>
       </div>
     </div>
 
-    <!-- Form -->
+    <!-- Right form panel -->
     <div class="card-form p-4 p-lg-5">
 
       <!-- Header -->
@@ -33,41 +34,117 @@
         <h1 class="header-title">Start your journey</h1>
       </div>
 
-      <!-- Success -->
-      <div *ngIf="successMessage" class="msg-success mb-4">
-        ✔ {{ successMessage }}
+      <!-- Success alert -->
+      <div *ngIf="successMessage" class="msg-success mb-4" role="status">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        {{ successMessage }}
       </div>
 
-      <!-- Error -->
-      <div *ngIf="errorMessage" class="msg-error mb-4">
-        ⚠ {{ errorMessage }}
+      <!-- Error alert -->
+      <div *ngIf="errorMessage" class="msg-error mb-4" role="alert">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2.5">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        {{ errorMessage }}
       </div>
 
+      <!-- Form -->
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
 
-        <!-- Username + Email -->
+        <!-- Row: username + email -->
         <div class="row g-3 mb-3">
 
+          <!-- Username -->
           <div class="col-12 col-sm-6">
-            <label class="field-label">Username</label>
-            <input class="f-input" formControlName="username" placeholder="johndoe">
+            <label for="username" class="field-label">Username</label>
+            <div class="input-wrap">
+              <span class="i-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              </span>
+              <input
+                id="username"
+                type="text"
+                class="f-input"
+                formControlName="username"
+                placeholder="johndoe"
+                autocomplete="username"
+                [class.invalid]="registerForm.get('username')?.invalid &&
+                                  registerForm.get('username')?.touched"
+              />
+            </div>
+            <div class="f-error"
+                 *ngIf="registerForm.get('username')?.touched &&
+                         registerForm.get('username')?.errors">
+              <ng-container *ngIf="registerForm.get('username')?.errors?.['required']">Username is required.</ng-container>
+              <ng-container *ngIf="registerForm.get('username')?.errors?.['minlength']">Minimum 3 characters.</ng-container>
+            </div>
           </div>
 
+          <!-- Email -->
           <div class="col-12 col-sm-6">
-            <label class="field-label">Email</label>
-            <input class="f-input" formControlName="email" placeholder="john@email.com">
+            <label for="email" class="field-label">Email</label>
+            <div class="input-wrap">
+              <span class="i-icon">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+              </span>
+              <input
+                id="email"
+                type="email"
+                class="f-input"
+                formControlName="email"
+                placeholder="john@email.com"
+                autocomplete="email"
+                [class.invalid]="registerForm.get('email')?.invalid &&
+                                  registerForm.get('email')?.touched"
+              />
+            </div>
+            <div class="f-error"
+                 *ngIf="registerForm.get('email')?.touched &&
+                         registerForm.get('email')?.errors">
+              <ng-container *ngIf="registerForm.get('email')?.errors?.['required']">Email is required.</ng-container>
+              <ng-container *ngIf="registerForm.get('email')?.errors?.['email']">Enter a valid email.</ng-container>
+            </div>
           </div>
-
         </div>
 
         <!-- Password -->
         <div class="mb-3">
-          <label class="field-label">Password</label>
-          <input type="password" class="f-input"
-                 formControlName="password"
-                 placeholder="Min 6 characters">
+          <label for="password" class="field-label">Password</label>
+          <div class="input-wrap">
+            <span class="i-icon">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </span>
+            <input
+              id="password"
+              type="password"
+              class="f-input"
+              formControlName="password"
+              placeholder="Min. 6 characters"
+              autocomplete="new-password"
+              [class.invalid]="registerForm.get('password')?.invalid &&
+                                registerForm.get('password')?.touched"
+            />
+          </div>
 
-          <!-- Strength -->
+          <!-- Password strength bar -->
           <div class="strength-bar mt-2"
                *ngIf="registerForm.get('password')?.value">
             <span class="s-seg" [class.active]="registerForm.get('password')!.value.length >= 1"></span>
@@ -75,70 +152,47 @@
             <span class="s-seg" [class.active]="registerForm.get('password')!.value.length >= 6"></span>
             <span class="s-seg" [class.active]="registerForm.get('password')!.value.length >= 9"></span>
           </div>
+
+          <div class="f-error"
+               *ngIf="registerForm.get('password')?.touched &&
+                       registerForm.get('password')?.errors">
+            <ng-container *ngIf="registerForm.get('password')?.errors?.['required']">Password is required.</ng-container>
+            <ng-container *ngIf="registerForm.get('password')?.errors?.['minlength']">Minimum 6 characters.</ng-container>
+          </div>
         </div>
 
         <!-- Role -->
         <div class="mb-4">
           <label class="field-label">Account type</label>
-
           <div class="role-group d-flex gap-2">
-
-            <label class="role-chip"
-              [class.selected]="registerForm.get('role')?.value === 'CUSTOMER'">
-              <input type="radio" formControlName="role" value="CUSTOMER" hidden>
-              👤 Customer
+            <label class="role-chip" [class.selected]="registerForm.get('role')?.value === 'CUSTOMER'">
+              <input type="radio" formControlName="role" value="CUSTOMER" hidden />
+              <span class="role-icon">🛒</span>
+              <span>Customer</span>
             </label>
-
-            <label class="role-chip"
-              [class.selected]="registerForm.get('role')?.value === 'RESTAURANT'">
-              <input type="radio" formControlName="role" value="RESTAURANT" hidden>
-              🧑‍💼 Manager
+            <label class="role-chip" [class.selected]="registerForm.get('role')?.value === 'ADMIN'">
+              <input type="radio" formControlName="role" value="ADMIN" hidden />
+              <span class="role-icon">👨</span>
+              <span>ADMIN</span>
             </label>
-
-            <label class="role-chip"
-              [class.selected]="registerForm.get('role')?.value === 'DRIVER'">
-              <input type="radio" formControlName="role" value="DRIVER" hidden>
-              🛵 Driver
+            <label class="role-chip" [class.selected]="registerForm.get('role')?.value === 'MANAGER'">
+              <input type="radio" formControlName="role" value="MANAGER" hidden />
+              <span class="role-icon">👨‍💼</span>
+              <span>MANAGER</span>
             </label>
-
           </div>
         </div>
 
-        <!-- ✅ OTP FIELD -->
-        <div class="mb-3" *ngIf="otpSent">
-          <label class="field-label">Enter OTP</label>
-
-          <input
-            type="text"
-            class="f-input"
-            placeholder="Enter 6-digit OTP"
-            [(ngModel)]="otp"
-            name="otp"
-          >
-        </div>
-
-        <!-- ✅ SUBMIT BUTTON -->
+        <!-- Submit -->
         <button type="submit" class="btn-register w-100" [disabled]="loading">
-
-          <!-- Step 1 -->
-          <span *ngIf="!loading && !otpSent">
-            Send OTP →
-          </span>
-
-          <!-- Step 2 -->
-          <span *ngIf="!loading && otpSent">
-            Verify & Register →
-          </span>
-
-          <span *ngIf="loading" class="spinner-border spinner-border-sm"></span>
-
+          <span *ngIf="!loading">Create account &nbsp;→</span>
+          <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status"></span>
         </button>
 
       </form>
 
-      <!-- Footer -->
       <p class="mt-4 text-center footer-note">
-        Already have an account?
+        Already have an account?&nbsp;
         <a routerLink="/login">Sign in</a>
       </p>
 

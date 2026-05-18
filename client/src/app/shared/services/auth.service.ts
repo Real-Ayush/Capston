@@ -1,89 +1,117 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { User } from '../../model/user';
-import { Observable, of, tap } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { LoginRequest } from '../../model/loginrequest';
 import { LoginResponse } from '../../model/login-response';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private apiUrl = `${environment.apiUrl}/auth`;
+  private baseUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 
-  // ✅ REGISTER (old method - still useful if needed)
+  private getAuthHeaders() {
+    return {
+      headers: {
+        Authorization: `Bearer ${this.getToken()}`
+      }
+    };
+  }
+
   register(user: User): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/register`, user);
+    return this.http.post<User>(`${this.baseUrl}/api/auth/register`, user);
   }
 
-  // getAllUser(){
-  //   return this.http.get<User[]>(`${this.apiUrl}/`)
-  // }
-
-  // ✅ NEW: SEND OTP TO EMAIL
-  sendOtp(email: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/send-otp`, {
-      email: email
-    });
+  registerUser(user: User): Observable<User> {
+    return this.register(user);
   }
 
-  // ✅ NEW: VERIFY OTP + REGISTER USER
-  verifyOtpAndRegister(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/verify-register`, data);
-  }
-
-  // ✅ LOGIN
-  login(request: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, request).pipe(
-      tap((res: LoginResponse) => {
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('role', res.role);
-        localStorage.setItem('username', res.username);
-        localStorage.setItem('userId', res.id.toString());
-      })
+  login(loginRequest: LoginRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(
+      `${this.baseUrl}/api/auth/login`,
+      loginRequest
     );
   }
 
-  // ✅ TOKEN
+  saveLoginData(response: any): void {
+    const normalizedRole = this.normalizeRole(response.role);
+
+    localStorage.setItem('token', response.token);
+    localStorage.setItem('userId', String(response.userId || response.id));
+    localStorage.setItem('username', response.username);
+    localStorage.setItem('email', response.email || '');
+
+    if (normalizedRole) {
+      localStorage.setItem('role', normalizedRole);
+    }
+  }
+
+  getAllUsers(): Observable<any[]> {
+    return this.http.get<any[]>(
+      `${this.baseUrl}/api/auth/users`,
+      this.getAuthHeaders()
+    );
+  }
+
   getToken(): string | null {
     return localStorage.getItem('token');
   }
 
-  // ✅ ROLE
   getRole(): string | null {
-    return localStorage.getItem('role');
+    return this.normalizeRole(localStorage.getItem('role'));
   }
 
-  // ✅ LOGIN STATUS
-  getLoginStatus(): boolean {
-    return !!localStorage.getItem('token');
+  getUserId(): number {
+    return Number(localStorage.getItem('userId') || 0);
+  }
+
+  getUsername(): string | null {
+    return localStorage.getItem('username');
   }
 
   isLoggedIn(): boolean {
     return !!this.getToken();
   }
 
-  // ✅ LOGOUT
+  getLoginStatus(): boolean {
+    return this.isLoggedIn();
+  }
+
+  getLoggedInUser(): Observable<any> {
+    return of({
+      id: this.getUserId(),
+      userId: this.getUserId(),
+      username: this.getUsername(),
+      email: localStorage.getItem('email'),
+      role: this.getRole()
+    });
+  }
+
   logout(): void {
     localStorage.clear();
   }
 
-  // ✅ USER INFO
-  getLoggedInUser() {
-    return of({
-      username: localStorage.getItem('username')
-    });
+  isAdmin(): boolean {
+    return this.getRole() === 'ADMIN';
   }
 
-  getUserId(): number {
-    return Number(localStorage.getItem('userId'));
+  isManager(): boolean {
+    return this.getRole() === 'MANAGER';
   }
 
-  getUsername(): string | null {
-    return localStorage.getItem('username');
+  isCustomer(): boolean {
+    return this.getRole() === 'CUSTOMER';
+  }
+
+  private normalizeRole(role: string | null): string | null {
+    if (!role) return null;
+
+    const cleaned = role.startsWith('ROLE_') ? role.slice(5) : role;
+    return cleaned.toUpperCase();
   }
 }
